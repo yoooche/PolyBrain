@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="com.polybrain.bookingtast.service.*"%>
-<%@page import="com.polybrain.bookingtast.entity.*"%>
+<%@page import="com.polybrain.service.*"%>
+<%@page import="com.polybrain.model.*"%>
 <%
     TablebookingService tabkSvc = new TablebookingService();
-    List<TablebookingVO> list = tabkSvc.getAll();
+    List<AdminTablebookingTO> list = tabkSvc.getAll();
     if(request.getAttribute("tabListData")==null) pageContext.setAttribute("tabListData",list);
 %>
 <!DOCTYPE html>
@@ -80,50 +80,50 @@ body {
   </thead>
 
  <tbody>
-	<c:forEach var="TablebookingVO" items="${tabListData}" >
+	<c:forEach var="AdminTablebookingTO" items="${tabListData}" >
 		<tr>
-            <td>${TablebookingVO.TABLE_BOOK_NO}</td>
-			<td>${TablebookingVO.TABLE_DATE}</td>
-			<td>${TablebookingVO.TABLE_NO}</td>
+            <td>${AdminTablebookingTO.TABLE_BOOK_NO}</td>
+			<td>${AdminTablebookingTO.TABLE_DATE}</td>
+			<td>${AdminTablebookingTO.TABLE_NO}</td>
 			<td>
-                <input type="checkbox" name="${TablebookingVO.TABLE_BOOK_NO}-morning" value="${TablebookingVO.TABLE_MOR}" >
+                <input type="checkbox" name="${AdminTablebookingTO.TABLE_BOOK_NO}-morning" value="${AdminTablebookingTO.TABLE_MOR}" >
                 <c:choose>
-                    <c:when test="${TablebookingVO.TABLE_MOR == 0}">
+                    <c:when test="${AdminTablebookingTO.TABLE_MOR == 0}">
                         <span style="color:black;">可預約</span>
                     </c:when>
-                    <c:when test="${TablebookingVO.TABLE_MOR == 1}">
+                    <c:when test="${AdminTablebookingTO.TABLE_MOR == 1}">
                        <span style="color:blue;">已預約</span>
                     </c:when>
-                    <c:when test="${TablebookingVO.TABLE_MOR == 2}">
+                    <c:when test="${AdminTablebookingTO.TABLE_MOR == 2}">
                        <span style="color:red;">不開放</span>
                     </c:when>
                 </c:choose>
             </td>
 			<td>
-                            <input type="checkbox" name="${TablebookingVO.TABLE_BOOK_NO}-eve" value="${TablebookingVO.TABLE_EVE}" >
+                            <input type="checkbox" name="${AdminTablebookingTO.TABLE_BOOK_NO}-eve" value="${AdminTablebookingTO.TABLE_EVE}" >
                             <c:choose>
-                                <c:when test="${TablebookingVO.TABLE_EVE == 0}">
+                                <c:when test="${AdminTablebookingTO.TABLE_EVE == 0}">
                                     <span style="color:black;">可預約</span>
                                 </c:when>
-                                <c:when test="${TablebookingVO.TABLE_EVE == 1}">
+                                <c:when test="${AdminTablebookingTO.TABLE_EVE == 1}">
                                     <span style="color:blue;">已預約</span>
                                 </c:when>
-                                <c:when test="${TablebookingVO.TABLE_EVE == 2}">
+                                <c:when test="${AdminTablebookingTO.TABLE_EVE == 2}">
                                      <span style="color:red;">不開放</span>
                                 </c:when>
                             </c:choose>
             </td>
 
 				<td>
-                                        <input type="checkbox" name="${TablebookingVO.TABLE_BOOK_NO}-night" value="${TablebookingVO.TABLE_EVE}" >
+                                        <input type="checkbox" name="${AdminTablebookingTO.TABLE_BOOK_NO}-night" value="${AdminTablebookingTO.TABLE_EVE}" >
                                         <c:choose>
-                                            <c:when test="${TablebookingVO.TABLE_EVE == 0}">
+                                            <c:when test="${AdminTablebookingTO.TABLE_EVE == 0}">
                                                 <span style="color:black;">可預約</span>
                                             </c:when>
-                                            <c:when test="${TablebookingVO.TABLE_EVE == 1}">
+                                            <c:when test="${AdminTablebookingTO.TABLE_EVE == 1}">
                                                <span style="color:blue;">已預約</span>
                                             </c:when>
-                                            <c:when test="${TablebookingVO.TABLE_EVE == 2}">
+                                            <c:when test="${AdminTablebookingTO.TABLE_EVE == 2}">
                                                  <span style="color:red;">不開放</span>
                                             </c:when>
                                         </c:choose>
@@ -131,7 +131,7 @@ body {
 			<td>
 			  <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/bookingtast/inserservlet" style="margin-bottom: 0px;">
 			     <input type="submit" value="修改">
-			     <input type="hidden" name="TABLE_NO" value="${TablebookingVO.TABLE_BOOK_NO}">
+			     <input type="hidden" name="TABLE_NO" value="${AdminTablebookingTO.TABLE_BOOK_NO}">
 			     <input type="hidden" name="action"	value="getOne_For_Update"></FORM>
 			</td>
 

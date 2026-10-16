@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.polybrain.employee.entity.*"%>
-<% EmpVo empVo = (EmpVo) request.getAttribute("empVo");%>
+<%@ page import="com.polybrain.model.*"%>
+<% EmpTO empVo = (EmpTO) request.getAttribute("empVo");%>
 
 <html lang="en">
     <head>

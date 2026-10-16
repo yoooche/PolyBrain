@@ -1,13 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.*" %>
-<%@ page import="com.polybrain.bid.entity.*" %>
-<%@ page import="com.polybrain.bid.service.*, com.polybrain.bid.service.impl.*" %>
-<%@ page import="com.polybrain.bid.dao.*, com.polybrain.bid.dao.impl.*" %>
+<%@ page import="com.polybrain.model.*" %>
+<%@ page import="com.polybrain.service.*, com.polybrain.service.impl.*" %>
+<%@ page import="com.polybrain.repository.*, com.polybrain.repository.impl.*" %>
 
 <%
 BiddingService biddingService = new BiddingServiceImpl();
-List<BidEventVo> list = biddingService.viewAllEvent();
+List<BidEventTO> list = biddingService.viewAllEvent();
 pageContext.setAttribute("list", list);
 %>
 
@@ -150,9 +150,9 @@ pageContext.setAttribute("list", list);
                                 </thead>
 
                                 <tbody>
-                                    <% List<BidEventVo> eventlist = (List<BidEventVo>) pageContext.getAttribute("list"); %>
+                                    <% List<BidEventTO> eventlist = (List<BidEventTO>) pageContext.getAttribute("list"); %>
                                             <% if(eventlist !=null ) { %>
-                                                <% for(BidEventVo bidEventVo : eventlist) {%>
+                                                <% for(BidEventTO bidEventVo : eventlist) {%>
                                                     <tr>
                                                         <td><%= bidEventVo.getBidEventNo() %></td>
                                                         <td><%= bidEventVo.getBidItemVo().getBidItemNo() %></td>

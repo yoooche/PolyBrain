@@ -1,20 +1,20 @@
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <%@page import="com.polybrain.forum.service.ArtService"%>
-    <%@page import="com.polybrain.forum.entity.ArtVo"%>
-    <%@page import="com.polybrain.forum.service.RpyService"%>
-    <%@page import="com.polybrain.forum.entity.RpyVo"%>
+    <%@page import="com.polybrain.service.ArtService"%>
+    <%@page import="com.polybrain.model.ArtTO"%>
+    <%@page import="com.polybrain.service.RpyService"%>
+    <%@page import="com.polybrain.model.RpyTO"%>
     <%@ page import="java.util.List" %>
 
 
     <%
         ArtService artSvc = new ArtService();
-        ArtVo artVo = artSvc.getOneArt(Integer.valueOf(request.getParameter("artNo")));
+        ArtTO artVo = artSvc.getOneArt(Integer.valueOf(request.getParameter("artNo")));
         pageContext.setAttribute("artVo", artVo);
     %>
     <%
            RpyService rpySvc = new RpyService();
-           List<RpyVo> rpyList = rpySvc.findByArt(Integer.valueOf(request.getParameter("artNo")));
+           List<RpyTO> rpyList = rpySvc.findByArt(Integer.valueOf(request.getParameter("artNo")));
            pageContext.setAttribute("rpyList", rpyList);
     %>
     <!DOCTYPE html>

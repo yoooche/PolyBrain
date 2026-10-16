@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="com.polybrain.member.service.*, com.polybrain.member.service.impl.*"%>
-<%@page import="com.polybrain.member.controller.*"%>
-<%@page import="com.polybrain.member.dao.*, com.polybrain.member.dao.impl.*"%>
-<%@page import="com.polybrain.member.entity.*"%>
+<%@page import="com.polybrain.service.*, com.polybrain.service.impl.*"%>
+<%@page import="com.polybrain.controller.*"%>
+<%@page import="com.polybrain.repository.*, com.polybrain.repository.impl.*"%>
+<%@page import="com.polybrain.model.*"%>
 
     <link href="http://localhost:8080/PolyBrain/view/member/css/styles.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/cb31023646.js" crossorigin="anonymous"></script>
@@ -21,7 +21,7 @@
                      }
     if (memNo != null) {
         MemDaoImpl memDao = new MemDaoImpl(); // 实例化你的 DAO 类
-        MemVo memVo = memDao.getMemberByMemNo(memNo);
+        MemTO memVo = memDao.getMemberByMemNo(memNo);
         pageContext.setAttribute("memVo", memVo);
     }
 %>

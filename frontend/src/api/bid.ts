@@ -1,7 +1,7 @@
 import type { BidEvent, BidItemInfo, BidPriceRange, BidTimer } from '@/types/bid'
 import { http } from './http'
 
-// 對應 feature/bid/controller/BiddingController（@WebServlet("/general/bidding")）
+// 對應 com.polybrain.controller.BiddingController（@WebServlet("/general/bidding")）
 const BIDDING = '/general/bidding'
 
 const query = <T>(message: string, bidEventId?: number) =>

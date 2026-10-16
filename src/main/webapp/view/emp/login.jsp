@@ -1,9 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.polybrain.employee.entity.*"%>
-<%@ page import="com.polybrain.employee.service.*, com.polybrain.employee.service.impl.*"%>
-<%@ page import="com.polybrain.employee.dao.*, com.polybrain.employee.dao.impl.*"%>
+<%@ page import="com.polybrain.model.*"%>
+<%@ page import="com.polybrain.service.*, com.polybrain.service.impl.*"%>
+<%@ page import="com.polybrain.repository.*, com.polybrain.repository.impl.*"%>
 
 <html lang="en">
 <head>

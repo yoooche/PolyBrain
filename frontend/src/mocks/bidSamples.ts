@@ -1,6 +1,6 @@
 import type { BidEvent, BidItemInfo, BidPriceRange, BidTimer } from '@/types/bid'
 
-// 後端沒啟動時的示範資料，欄位對應 BidEventVo
+// 後端沒啟動時的示範資料，欄位對應 BidEventTO
 export const SAMPLE_EVENTS: BidEvent[] = [
   { bidEventNo: 1, floorPrice: 800, directivePrice: 2400, leastOffers: 50, closeTime: '2026-10-20 21:00:00', bidItemVo: { bidItemName: '卡坦島 25 週年紀念版', gamePublisher: 'KOSMOS', bidItemDescribe: '全新未拆封，含 25 週年限定木製配件。' } },
   { bidEventNo: 2, floorPrice: 1500, directivePrice: 4800, leastOffers: 100, closeTime: '2026-10-21 20:00:00', bidItemVo: { bidItemName: '璀璨寶石 絕版初版', gamePublisher: 'Space Cowboys', bidItemDescribe: '2014 年初版，籌碼完整，盒況九成新。' } },

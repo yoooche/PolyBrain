@@ -34,18 +34,21 @@ npx shadcn@latest add <component>   # 新增 shadcn 元件到 src/components/ui/
 
 ## 後端架構
 
-- 根 package 是 `com.polybrain`。共用基礎在 `common/`（`config`、`dao`、`service`、`entity`、`filter`、`listener`、`util`）；每個功能是 `com/polybrain/<模組>/`，底下分 `controller`（Servlet）/ `service`（介面）/ `service/impl` / `dao`（介面，或沒有介面的 DAO 類別）/ `dao/impl` / `entity`（Hibernate entity 與 JDBC VO，類別名稱仍是 `XxxVo`）/ `dto` / `websocket`（`@ServerEndpoint`）。模組名稱 `mem` 已改為 `member`、`emp` 改為 `employee`；`bookingtast` 保留原名。`cs`、`comm`、`ftp`、`spcar`、`stock` 是沒實作的空殼。
-- 新增類別時照這個分層放：實作介面的類別放 `impl`，新的 entity 放 `entity`。JSP 用 `<%@ page import %>` 直接引用 Java 類別，搬動類別時要一起改 JSP。
-- **Transaction 由 Filter 管，不在 Service 裡**：`common/filter/HibernateFilter` 攔 `/general/*` 和 `*.jsp`，`common/filter/LoginFilter` 攔 `/loginRequired/*`（未登入回 401，但仍會繼續執行 chain）。兩者都在請求前 `beginTransaction()`、請求後 `commit()`。DAO 透過 `common/dao/CoreDao.getSession()` 拿 `getCurrentSession()`。因此新的 Servlet 必須掛在這兩個 URL 前綴底下，否則 DAO 會沒有 transaction。
-- 實際使用的 Hibernate 設定是 `common/util/HibernateUtil` + `src/main/resources/hibernate.cfg.xml`（JNDI `java:comp/env/jdbc/polybrain`，連線池定義在 `src/main/webapp/META-INF/context.xml`，MySQL）。**新增 entity 要加進 `hibernate.cfg.xml` 的 `<mapping>`**。`common/config/AppConfig`（Spring）沒有被任何程式使用，`applicationContext.xml` 也是空的。
-- Servlet 大多用 `@WebServlet` 註冊；`WEB-INF/web.xml` 裡另有幾個 XML 註冊，其中 `com.polybrain.member.controller.loginServlet` 指向不存在的類別（搬移前就是壞的）。
+- 依分層（package-by-layer）組織，不分功能模組，全部在 `com.polybrain` 底下：`controller`（Servlet）、`websocket`（`@ServerEndpoint`）、`service`（介面與沒有介面的 Service）、`service/impl`、`repository`（DAO 介面，或沒有介面的 DAO 類別；類別名稱仍是 `XxxDao`）、`repository/impl`、`model`（Hibernate entity 與 JDBC 物件）、`dto`、`config`、`filter`、`listener`、`util`。
+- 資料物件一律以 `TO` 結尾（例如 `MemTO`、`BidEventTO`），不要用 `Vo`。只有類別名稱是 `TO`，欄位與變數名稱（例如 `bidItemVo`）維持原樣，因為 Gson 以欄位名稱當 JSON key，前端依賴這些 key。
+- 同一張表有兩組重複的 entity：`GameTableTO`／`TableBookingTO`（前台訂位）與 `AdminGametableTO`／`AdminTablebookingTO`（員工後台「時段管理」，原 `bookingtast` 模組）。員工與會員的登入 Servlet 分別是 `EmpLoginController`、`MemLoginController`。
+- macOS 檔案系統不分大小寫，所有類別都在少數幾個 package 裡，新增類別前要確認沒有只差大小寫的同名類別。
+- JSP 用 `<%@ page import %>` 直接引用 Java 類別，搬動或改名類別時要一起改 JSP。
+- **Transaction 由 Filter 管，不在 Service 裡**：`filter/HibernateFilter` 攔 `/general/*` 和 `*.jsp`，`filter/LoginFilter` 攔 `/loginRequired/*`（未登入回 401，但仍會繼續執行 chain）。兩者都在請求前 `beginTransaction()`、請求後 `commit()`。DAO 透過 `repository/CoreDao.getSession()` 拿 `getCurrentSession()`。因此新的 Servlet 必須掛在這兩個 URL 前綴底下，否則 DAO 會沒有 transaction。
+- 實際使用的 Hibernate 設定是 `util/HibernateUtil` + `src/main/resources/hibernate.cfg.xml`（JNDI `java:comp/env/jdbc/polybrain`，連線池定義在 `src/main/webapp/META-INF/context.xml`，MySQL）。**新增 entity 要加進 `hibernate.cfg.xml` 的 `<mapping>`**。`config/AppConfig`（Spring）沒有被任何程式使用，`applicationContext.xml` 也是空的。
+- Servlet 大多用 `@WebServlet` 註冊；`WEB-INF/web.xml` 裡另有幾個 XML 註冊，其中 `com.polybrain.controller.loginServlet` 指向不存在的類別（搬移前就是壞的）。
 - 很多 Servlet 用單一 URL 加 `message` 參數分派動作，例如 `BiddingController`（`/general/bidding`）以 `req.getParameter("message")` 區分 `selectAllEvent`、`getBiddingItemInfo`、`rangeBarSetting`、`getBiddingTimer`、`getBiddingItemPics` 等，參數以 form-urlencoded 傳入，回傳 Gson 序列化的 JSON。
-- 競標即時出價：`bid/websocket/BidOneWebsocket`（`/BidOnePage/{memName}/{bidEventId}`）把出價寫進本機 Redis（`localhost:6379`）的 sorted set，key 是 bidEventId、score 是金額；結標時 `BiddingServiceImpl.createOneOrder` 取最高分建立訂單並寄信。`bidders` 是所有場次共用的 Set，訊息會廣播到所有場次，前端要自己依 `bidEventId` 過濾。
+- 競標即時出價：`websocket/BidOneWebsocket`（`/BidOnePage/{memName}/{bidEventId}`）把出價寫進本機 Redis（`localhost:6379`）的 sorted set，key 是 bidEventId、score 是金額；結標時 `BiddingServiceImpl.createOneOrder` 取最高分建立訂單並寄信。`bidders` 是所有場次共用的 Set，訊息會廣播到所有場次，前端要自己依 `bidEventId` 過濾。
 - 登入狀態放在 `HttpSession`（`sessionId`、`memNo`），前端用 `/general/validateMemStatus` 查詢。
 
 ## 前端架構（`frontend/`）
 
-- 所有後端呼叫都經過 `src/api/http.ts`：base URL 讀 `VITE_API_BASE`（`.env` 設為 `/PolyBrain`），提供 `http.get/post/postForm/put/delete<T>()` 和 `wsUrl()`；非 2xx 丟 `HttpError`。舊 Servlet 用 `getParameter` 讀值，所以呼叫它們要用 `postForm`。各模組的 API 包在 `src/api/<模組>.ts`，回應型別放在 `src/types/`，欄位對應 Java 的 VO / DTO。
+- 所有後端呼叫都經過 `src/api/http.ts`：base URL 讀 `VITE_API_BASE`（`.env` 設為 `/PolyBrain`），提供 `http.get/post/postForm/put/delete<T>()` 和 `wsUrl()`；非 2xx 丟 `HttpError`。舊 Servlet 用 `getParameter` 讀值，所以呼叫它們要用 `postForm`。各模組的 API 包在 `src/api/<模組>.ts`，回應型別放在 `src/types/`，欄位對應 Java 的 `model` / `dto` 類別。
 - 開發時 `vite.config.ts` 把 `/PolyBrain`（含 WebSocket）proxy 到 `localhost:8080` 的 Tomcat，所以前端程式碼裡不要寫死主機。
 - 後端連不上時，頁面會退回 `src/mocks/bidSamples.ts` 的示範資料並顯示提示標籤。
 - 路由用 `react-router`，定義在 `src/App.tsx`。即時競標邏輯封裝在 `src/hooks/useBidSocket.ts`。

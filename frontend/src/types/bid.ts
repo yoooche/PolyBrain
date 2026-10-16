@@ -1,4 +1,4 @@
-// 對應 feature/bid/vo/BidItemVo、BidEventVo，只列前端用到的欄位
+// 對應 com.polybrain.model.BidItemTO、BidEventTO，只列前端用到的欄位
 export interface BidItem {
   bidItemNo?: number
   bidItemName: string
