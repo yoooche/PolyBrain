@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./css/style_PB.css"/>
-        <link rel="stylesheet" href="./css/styles.css"/>
+        <link rel="stylesheet" href="../common/css/styles.css"/>
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -254,7 +254,7 @@
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
         <script src="vendor/jquery/jquery.min.js"></script>
-        <!--    <script src="./js/datatables-simple-demo.js"></script>
+        <!--    <script src="../common/js/datatables-simple-demo.js"></script>
             <script src="./js/bootstrap.bundle.min.js"></script>
             <script src="./js/jquery.easing.min.js"></script>
             <script src="./js/sb-admin-2.min.js"></script>
