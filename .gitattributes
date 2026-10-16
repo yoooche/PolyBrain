@@ -1,0 +1,2 @@
+# 舊頁面的 CSS 多是 SB Admin / Bootstrap 模板的複製版，不列入 GitHub 語言統計
+src/main/webapp/view/**/*.css linguist-vendored
