@@ -29,7 +29,7 @@
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="${pageContext.request.contextPath}/view/forum/innerpage/css/styles.css" rel="stylesheet" />
+        <link href="../css/styles.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.22/dist/sweetalert2.min.css" rel="stylesheet">
         <style>
             nav.navbar {
@@ -178,7 +178,7 @@
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
-    <script src="${pageContext.request.contextPath}/view/forum/innerpage/js/scripts.js"></script>
+    <script src="../js/scripts.js"></script>
     <script>
         const submitButton = document.querySelector("#addCommentBtn");
         submitButton.addEventListener("click", function() {

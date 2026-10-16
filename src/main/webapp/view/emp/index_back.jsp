@@ -10,7 +10,7 @@
         <title>PolyBrain後台主控頁</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./css/style_PB.css"/>
-        <link rel="stylesheet" href="./css/styles.css"/>
+        <link rel="stylesheet" href="../common/css/styles.css"/>
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -248,6 +248,6 @@
         <script src="assets/demo/chart-area-demo.js"></script>
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="js/datatables-simple-demo.js"></script>
+        <script src="../common/js/datatables-simple-demo.js"></script>
     </body>
 </html>

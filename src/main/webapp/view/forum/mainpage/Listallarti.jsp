@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
-    <link href="./css/Art.css" rel="stylesheet" />
+    <link href="../../common/css/item.css" rel="stylesheet" />
 
 <script>
 	$(document).ready(function() {

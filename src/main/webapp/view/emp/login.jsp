@@ -14,7 +14,7 @@
     <meta name="author" content="" />
     <title>Login - SB Admin</title>
     <link rel="stylesheet" href="./css/style_PB.css"/>
-    <link rel="stylesheet" href="./css/styles.css"/>
+    <link rel="stylesheet" href="../common/css/styles.css"/>
     <!--        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>-->
 </head>
 <body class="bg-dark">

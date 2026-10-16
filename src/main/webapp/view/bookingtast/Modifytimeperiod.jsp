@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.jqueryui.min.css" /> <!-- ●●css for jquery datatables 用 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!--以上新增的-->
-    <link href="./css/item.css" rel="stylesheet" />
+    <link href="../common/css/item.css" rel="stylesheet" />
       <style>
    .pagination {
        /* 例如：調整整體的寬度 */
@@ -337,7 +337,7 @@ body {
         </div>
     </div>
     </div>
-<script src="./js/jquery-3.7.0.min.js"></script>
+<script src="../common/js/jquery-3.7.0.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
