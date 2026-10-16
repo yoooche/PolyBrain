@@ -306,7 +306,7 @@
                                     <div class="input-container">
                                         <input type="number" name="quantity" value="${cartItemImgDTO.quantity}"
                                             id="cartQuantity" min=" 0 " max="${cartItemImgDTO.itemQty}"
-                                            class="quantity form-control" onblur="submitUpdateForm()">
+                                            class="quantity form-control">
                                     </div>
 
                                     <input type="hidden" name="itemNo" value="${cartItemImgDTO.itemNo}" class="itemNo">
@@ -346,7 +346,6 @@
             var currentQuantityValue;
             var currentItemNoValue;
             var currentItemQtyValue;
-            var deleteBtnValue = 1;
             var cartQuantityElements;
 
             window.addEventListener('load', function () {
@@ -403,15 +402,8 @@
                         var rowMother = rowMotherElements[index];
 
 
-                        document.querySelector('#submitBtn').addEventListener('click', function () {
-                            console.log("345");
-                            console.log('cartQuantityElements.length' + cartQuantityElements.length);
-                            if (cartQuantityElements.length != 0) { //情境是: 進來頁面直接按結帳，這是在判斷購物車有沒有商品
-                                currentItemNoValue = itemNoinput.value;
-                                currentQuantityValue = input.value;
-                                submitFormToConfirmOrder();
-                            }
-
+                        input.addEventListener('blur', function () {
+                            saveQuantity(itemNoinput.value, input.value, 1);
                         });
 
                         deleteBtn.addEventListener('click', function () {
@@ -429,12 +421,10 @@
                         function deletefunction() {
                             currentQuantityValue = input.value;
                             currentItemNoValue = itemNoinput.value;
-                            deleteBtnValue = 0;
 
-                            console.log('deleteBtnValue' + deleteBtnValue);
                             rowMother.parentElement.removeChild(rowMother);
 
-                            submitUpdateForm();
+                            saveQuantity(itemNoinput.value, input.value, 0).then(() => location.reload());
 
                         }
 
@@ -516,66 +506,40 @@
             }
 
 
-            function submitUpdateForm() {
-                return new Promise((resolve, reject) => {
-                    fetch('/PolyBrain/loginRequired/CartServlet', {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams({
-                            action: 'UpdateItemQuantity',
-                            quantity: parseInt(currentQuantityValue),
-                            itemNo: parseInt(currentItemNoValue),
-                            deleteARow: parseInt(deleteBtnValue)
-                        })
+            function saveQuantity(itemNo, quantity, deleteARow) {
+                return fetch('/PolyBrain/loginRequired/CartServlet', {
+                    method: 'POST',
+                    headers: {'content-type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({
+                        action: 'UpdateItemQuantity',
+                        quantity: parseInt(quantity),
+                        itemNo: parseInt(itemNo),
+                        deleteARow: deleteARow
                     })
-                        .then(resp => resp.json())
-                        .then(data => {
-                            console.log(data.message);
-                            resolve();
-                            location.reload();
-
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
                 });
             }
 
-            function submitFormToConfirmOrder() {
-                console.log("in2");
-
-                submitUpdateForm()
+            // 先把每一列的數量都存好，全部完成才去結帳頁；中途不能 reload，否則後面的請求會被取消
+            document.querySelector('#submitBtn').addEventListener('click', function () {
+                var quantityInputs = document.querySelectorAll('.quantity');
+                var itemNoInputs = document.querySelectorAll('.itemNo');
+                if (quantityInputs.length == 0) {
+                    return;
+                }
+                var saves = [];
+                for (var i = 0; i < quantityInputs.length; i++) {
+                    saves.push(saveQuantity(itemNoInputs[i].value, quantityInputs[i].value, 1));
+                }
+                Promise.all(saves)
+                    .then(() => fetch('/PolyBrain/loginRequired/ConfirmOrder', {
+                        method: 'POST',
+                        headers: {'content-type': 'application/x-www-form-urlencoded'},
+                        body: new URLSearchParams({action: 'getAll'})
+                    }))
                     .then(() => {
-                        fetch('/PolyBrain/loginRequired/ConfirmOrder', {
-                            method: 'POST',
-                            headers: {
-                                'content-type': 'application/x-www-form-urlencoded' //
-                            },
-                            body: new URLSearchParams({
-                                action: 'getAll',
-                                // quantity: currentQuantityValue,
-                                // itemNo: currentItemNoValue
-                            })
-                        })
-                            .then(() => {
-                                window.location.href = "http://localhost:8080/PolyBrain/view/CartTrace/CartTrace.jsp";
-                            })
-
-                    })
-                console.log('currentQuantityValue' + currentQuantityValue)
-                console.log('currentItemNoValue' + currentItemNoValue)
-                console.log('currentItemQtyValue' + currentItemQtyValue)
-                console.log('deleteBtnValue' + deleteBtnValue)
-            }
-
-
-
-
-
-
-
+                        window.location.href = '/PolyBrain/view/CartTrace/CartTrace.jsp';
+                    });
+            });
         </script>
         <!-- <script>
         $(document).ready(function(){

@@ -1,37 +1,30 @@
 package com.polybrain.controller;
 
-import com.polybrain.util.CommonUtil;
 import com.polybrain.service.OrderService;
-import com.polybrain.model.ItemOrderTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
 
+import static com.polybrain.util.CommonUtil.writePojo2Json;
+import static com.polybrain.util.Constants.SESSION_MEM_NO;
 
+/** 會員自己的商城訂單列表（memberOrder.html、orderSuccess.html） */
 @WebServlet("/loginRequired/findAllOrder")
 public class MemberOrderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    CommonUtil commonUtil = new CommonUtil();
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         doPost(req, res);
     }
 
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        HttpSession session = req.getSession();
-        Integer memNo = (Integer)session.getAttribute("memNo");
-        System.out.println("有來這嗎??");
-        List<ItemOrderTO> itemMemOrderVOS = new OrderService().selectFromMemNo(memNo);
-        System.out.println(itemMemOrderVOS);
-        commonUtil.writePojo2Json(res, itemMemOrderVOS);
-
-
+        Integer memNo = (Integer) req.getSession().getAttribute(SESSION_MEM_NO);
+        writePojo2Json(res, new OrderService().selectFromMemNo(memNo));
     }
-
 }

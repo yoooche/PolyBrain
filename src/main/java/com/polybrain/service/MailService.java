@@ -1,62 +1,24 @@
 package com.polybrain.service;
 
-
-import com.polybrain.repository.impl.BidOrderDaoImpl;
-import com.polybrain.model.BidOrderTO;
-import com.polybrain.repository.impl.MemDaoImpl;
-import com.polybrain.model.MemTO;
-import com.polybrain.repository.impl.ItemOrderDAOImpl;
-import com.polybrain.model.ItemOrderTO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import java.io.File;
 import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.servlet.ServletContext;
 
 public class MailService {
-    private ItemOrderDAOImpl itemOrderDao;
-    private BidOrderDaoImpl bidOrderDao;
-    private MemDaoImpl memDao;
+    private static final Logger logger = LogManager.getLogger(MailService.class);
 
-
-    // 設定傳送郵件:至收信人的Email信箱,Email主旨,Email內容
-    public void sendMail(Integer orderNo) {
-
-        Integer memNo = null;
-        Integer orderTotal = null;
-
-
-        if (orderNo >= 7001) {
-            bidOrderDao = new BidOrderDaoImpl();
-            BidOrderTO bidOrderVo = bidOrderDao.selectById(orderNo);
-            memNo = bidOrderVo.getMemNo();
-            orderTotal = bidOrderVo.getFinalPrice();
-        }
-
-        else if (orderNo >= 1) {
-            itemOrderDao = new ItemOrderDAOImpl();
-            ItemOrderTO itemOrderVO = itemOrderDao.selectById(orderNo);
-            memNo = itemOrderVO.getMemNo();
-            orderTotal = itemOrderVO.getOrderTotal();
-        }
-        else{
-            return;
-        }
-
+    /**
+     * 寄商城訂單確認信。不查資料庫，資料由呼叫端先準備好：
+     * 結帳是在 HibernateUtil.runAfterCommit 裡呼叫，那時 transaction 已經結束，不能再查資料。
+     */
+    public void sendOrderMail(String memName, String memEmail, Integer orderNo, Integer orderTotal) {
         try {
-            memDao = new MemDaoImpl();
-            MemTO memVo = memDao.selectById(memNo);
-            String memName = memVo.getMemName();
-            String memEmail = memVo.getMemEmail();
-
-
             JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
             senderImpl.setHost("smtp.gmail.com");
             senderImpl.setPort(587);
@@ -118,17 +80,10 @@ public class MailService {
             // 傳送郵件
             senderImpl.send(mailMessage);
 
-            System.out.println("傳送成功");
-
+            logger.info("Order mail sent: order {} to {}", orderNo, memEmail);
         } catch (Exception e) {
-            System.out.println("傳送失敗!");
-            e.printStackTrace();
+            logger.error("Failed to send order mail: order {} to {}", orderNo, memEmail, e);
         }
-    }
-
-    public static void main(String args[]) {
-        MailService mailService = new MailService();
-        mailService.sendMail(7001);
     }
 
 }

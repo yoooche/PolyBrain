@@ -1,27 +1,16 @@
 package com.polybrain.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+/** CartTraceTO 的複合主鍵（會員編號 + 商品編號）；Hibernate 用 equals、hashCode 判斷是不是同一筆 */
+@Getter
+@Setter
 public class CartTraceId implements Serializable {
-
-    public Integer getMemNo() {
-        return memNo;
-    }
-
-    public void setMemNo(Integer memNo) {
-        this.memNo = memNo;
-    }
-
-    public Integer getItemNo() {
-        return itemNo;
-    }
-
-    public void setItemNo(Integer itemNo) {
-        this.itemNo = itemNo;
-    }
+    private static final long serialVersionUID = 1L;
 
     private Integer memNo;
     private Integer itemNo;

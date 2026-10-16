@@ -1,189 +1,112 @@
 package com.polybrain.controller;
 
-import com.polybrain.service.OrderService;
 import com.polybrain.model.ItemOrderTO;
+import com.polybrain.service.OrderService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.polybrain.util.CommonUtil.trimToEmpty;
+import static com.polybrain.util.OrderUtil.isValidPhone;
+
+/** 後台訂單管理（listAllOrder.jsp、updateOrder_input.jsp） */
 @WebServlet("/view/order/order.tw")
 public class ItemOrderServlet extends HttpServlet {
-    public void doGet(HttpServletRequest req, HttpServletResponse res )
-            throws ServletException, IOException
-    {
+    private static final Logger logger = LogManager.getLogger(ItemOrderServlet.class);
+    private static final String ORDER_LIST_PAGE = "/view/order/listAllOrder.jsp";
+    private static final String ORDER_EDIT_PAGE = "/view/order/updateOrder_input.jsp";
+    private static final String RECEIVER_NAME_REGEX = "^[(一-龥)(a-zA-Z0-9-)]{2,10}$";
+    private static final int MAX_ADDRESS_LENGTH = 255; // item_order.RECEIVER_ADDRESS 的欄位長度
+
+    private final OrderService orderService = new OrderService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         doPost(req, res);
     }
 
-    public void doPost(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException{
-        HttpSession session  = req.getSession();
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        System.out.println("helloMoto");
-
         String action = req.getParameter("test1");
-        System.out.println("action"+action);
-        if("getAllOrder".equals(action)){
-            List<ItemOrderTO> orderVOList = new OrderService().getAll();
-            session.setAttribute("orderVOList", orderVOList);
-            System.out.println("你走後你別在笑我");
-            String url = "/view/order/listAllOrder.jsp";
-            RequestDispatcher red =req.getRequestDispatcher(url);
-            red.forward(req, res);
-        }
 
-        if("getOne_For_Display".equals(action)){
-            List<String> errorMsgs = new LinkedList<String>();
-            req.setAttribute("errorMsgs", errorMsgs);
-//
-//
-//
-            String str = req.getParameter("orderNo");
-            System.out.println(str);
-            if( str == null || (str.trim()).length() == 0){
-                errorMsgs.add("請輸入訂單編號");
-            }
-//
-            if(!errorMsgs.isEmpty()){                    //這裡的斜線(第一條)代表專案路徑(webapp)
-                RequestDispatcher failureView = req.getRequestDispatcher("/view/order/select.jsp");
-                failureView.forward(req, res);
-                return;        //程式中斷
-            }
-
-            Integer orderNo = null;
-//            Integer orderNo = Integer.valueOf(str);
-//            orderNo = Integer.valueOf(str);
-
-            try {
-                orderNo = Integer.valueOf(str);
-            } catch (Exception e) {
-                errorMsgs.add("訂單編號格式不對喔~");
-            }
-//
-            if(!errorMsgs.isEmpty()){
-                RequestDispatcher failureView = req.getRequestDispatcher("/view/order/select.jsp");
-                failureView.forward(req, res);
-                return;        //程式中斷
-            }
-//
-            OrderService odSvc = new OrderService();
-            ItemOrderTO itemordervo = odSvc.getOneOrder(orderNo);
-            if(itemordervo == null){
-                errorMsgs.add("查無資料");
-            }
-            if(!errorMsgs.isEmpty()){
-                RequestDispatcher failureView = req.getRequestDispatcher("/view/order/select.jsp");
-                failureView.forward(req, res);
-                return;        //程式中斷
-            }
-
-            req.setAttribute("itemorder", itemordervo);
-            System.out.println(itemordervo);
-            String url = "/view/order/listOneEmp.jsp";
-            RequestDispatcher successView = req.getRequestDispatcher(url);
-            successView.forward(req, res);
-
-        }
-
-
-        if("getOne_For_Update".equals(action)){
-            List<String> errorMsgs =  new LinkedList<String>();
-            req.setAttribute("errorMsgs", errorMsgs);
-
-            Integer orderNo = Integer.valueOf(req.getParameter("orderNo").trim());
-            System.out.println(orderNo);
-            OrderService odSvc = new OrderService();
-            ItemOrderTO itemordervo = odSvc.getOneOrder(orderNo);
-            if(itemordervo == null){
+        if ("getOne_For_Update".equals(action)) {
+            Integer orderNo = Integer.valueOf(trimToEmpty(req.getParameter("orderNo")));
+            ItemOrderTO itemOrderVO = orderService.getOneOrder(orderNo);
+            if (itemOrderVO == null) {
                 return;
             }
-
-            req.setAttribute("itemorder", itemordervo);
-            String url = "/view/order/updateOrder_input.jsp";
-            RequestDispatcher successView = req.getRequestDispatcher(url);
-            successView.forward(req, res);
+            req.setAttribute("errorMsgs", new LinkedList<String>());
+            req.setAttribute("itemorder", itemOrderVO);
+            req.getRequestDispatcher(ORDER_EDIT_PAGE).forward(req, res);
         }
 
-        if("update".equals(action)){
+        if ("update".equals(action)) {
+            updateReceiver(req, res);
+        }
 
-            List<String> errorMsgs = new LinkedList<String>();
+        if ("delete".equals(action)) {
+            Integer orderNo = Integer.valueOf(req.getParameter("orderNo"));
+            orderService.deleteById(orderNo);
+            logger.info("Back office deleted order {}", orderNo);
+            res.sendRedirect(req.getContextPath() + ORDER_LIST_PAGE);
+        }
+    }
+
+    private void updateReceiver(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        Integer orderNo = Integer.valueOf(req.getParameter("orderNo"));
+        List<String> errorMsgs = new LinkedList<>();
+
+        String receiverName = trimToEmpty(req.getParameter("receiverName"));
+        if (receiverName.isEmpty()) {
+            errorMsgs.add("收件人姓名請勿空白");
+        } else if (!receiverName.matches(RECEIVER_NAME_REGEX)) {
+            errorMsgs.add("收件人姓名只能是中英文,數字,- 且長度介於2-10之間");
+        }
+
+        String receiverAddress = trimToEmpty(req.getParameter("receiverAddress"));
+        if (receiverAddress.isEmpty()) {
+            errorMsgs.add("收件地址不為空");
+        } else if (receiverAddress.length() > MAX_ADDRESS_LENGTH) {
+            errorMsgs.add("收件地址太長");
+        }
+
+        String receiverPhone = trimToEmpty(req.getParameter("receiverPhone"));
+        if (receiverPhone.isEmpty()) {
+            errorMsgs.add("收件人電話不為空");
+        } else if (!isValidPhone(receiverPhone)) {
+            errorMsgs.add("手機號碼格式不正確");
+        }
+
+        if (!errorMsgs.isEmpty()) {
+            // 另外 new 一個只給畫面顯示；改到查出來的訂單的話，transaction commit 時會把錯的資料存進去
+            ItemOrderTO formValues = new ItemOrderTO();
+            formValues.setOrderNo(orderNo);
+            formValues.setMemNo(Integer.valueOf(req.getParameter("memNo")));
+            formValues.setReceiverName(receiverName);
+            formValues.setReceiverAddress(receiverAddress);
+            formValues.setReceiverPhone(receiverPhone);
             req.setAttribute("errorMsgs", errorMsgs);
-
-            Integer orderNo = Integer.valueOf(req.getParameter("orderNo"));
-            Integer memNo = Integer.valueOf(req.getParameter("memNo"));
-
-
-            String receiverName = req.getParameter("receiverName").trim();
-            String rnameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9-)]{2,10}$";
-            if(receiverName == null || receiverName.trim().length()==0){
-                errorMsgs.add("收件人姓名請勿空白");
-
-            }else if (!receiverName.trim().matches(rnameReg)){
-                errorMsgs.add("收件人姓名只能是中英文,數字,- 且長度介於2-10之間");
-            }
-
-            String receiverAddress = req.getParameter("receiverAddress").trim();
-            String rAddReg = "^(.{0,30})(.*?)$";
-            if(receiverAddress == null || receiverAddress.trim().length() == 0){
-                errorMsgs.add("收件地址不為空");
-            }else if (!receiverAddress.trim().matches(rAddReg)){
-                errorMsgs.add("最好你家地址這麼長");
-            }
-
-            String receiverPhone = req.getParameter("receiverPhone").trim();
-            String rPhoneReg ="^09[0-9]{8}$";
-            if(receiverPhone == null || receiverPhone.trim().length() == 0){
-                errorMsgs.add("收件人電話不為空");
-            } else if (!receiverPhone.trim().matches(rPhoneReg)) {
-                errorMsgs.add("你是在亂打膩 = =");
-            }
-
-            OrderService odsvc = new OrderService();
-            ItemOrderTO oldVO = odsvc.getOneOrder(orderNo);
-
-            ItemOrderTO itemordervo = new ItemOrderTO();
-            itemordervo.setOrderNo(orderNo);
-            itemordervo.setMemNo(memNo);
-            itemordervo.setReceiverName(receiverName);
-            itemordervo.setReceiverAddress(receiverAddress);
-            itemordervo.setReceiverPhone(receiverPhone);
-
-//            itemordervo.setReceiverMethod(oldVO.getReceiverMethod());
-//            itemordervo.setOrderState(oldVO.getOrderState());
-//            itemordervo.setOrderTotal(oldVO.getOrderTotal());
-//            itemordervo.setTranTime(oldVO.getTranTime());
-
-            if(!errorMsgs.isEmpty()){
-                req.setAttribute("itemorder", itemordervo);
-                RequestDispatcher failureView = req.getRequestDispatcher("/view/order/updateOrder_input.jsp");
-                failureView.forward(req, res);
-                return;
-            }
-
-
-            ItemOrderTO new123 = odsvc.updateBackOrder(itemordervo);
-
-            req.setAttribute("itemorder", new123);
-            String url = "/view/order/listOneEmp.jsp";
-            RequestDispatcher successview = req.getRequestDispatcher(url);
-            successview.forward(req, res);
+            req.setAttribute("itemorder", formValues);
+            req.getRequestDispatcher(ORDER_EDIT_PAGE).forward(req, res);
+            return;
         }
 
-        if("delete".equals(action)){
-            Integer orderNo = Integer.valueOf(req.getParameter("orderNo"));
-            System.out.println("有來這嗎"+orderNo);
-            OrderService odsvc = new OrderService();
-            odsvc.deleteById(orderNo);
-            String url = "/view/order/listAllOrder.jsp";
-            RequestDispatcher requestDispatcher =req.getRequestDispatcher(url);
-            requestDispatcher.forward(req, res);
-        }
+        // 在查出來的訂單上改，其他欄位（狀態、寄送方式、成立日期）才不會被蓋成 null
+        ItemOrderTO itemOrderVO = orderService.getOneOrder(orderNo);
+        itemOrderVO.setReceiverName(receiverName);
+        itemOrderVO.setReceiverAddress(receiverAddress);
+        itemOrderVO.setReceiverPhone(receiverPhone);
+        orderService.updateBackOrder(itemOrderVO);
+        logger.info("Back office updated receiver info of order {}", orderNo);
+        res.sendRedirect(req.getContextPath() + ORDER_LIST_PAGE);
     }
 }

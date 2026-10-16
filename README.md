@@ -55,9 +55,25 @@ Transactions are opened and committed by `filter/HibernateFilter` (`/general/*`,
 - JDK 17 (Lombok 1.18.28 does not compile on JDK 21)
 - Maven 3.9+
 - Tomcat 9
-- MySQL with a `polybrain` database (no schema script is included in this repo)
+- MySQL with a `polybrain` database. `db/dev-seed.sql` creates the tables Hibernate maps and fills them with sample data: `mysql -uroot -p polybrain < db/dev-seed.sql`. It drops those tables first. Logins: member `test@polybrain.com` / `123456`, employee `admin@polybrain.com` / `123456`
 - Redis on `localhost:6379`
 - Node.js 20+ for the frontend
+
+### Redis
+
+Redis must be running before you start the backend. Live bidding stores each bid in a sorted set keyed by the auction ID.
+
+```bash
+redis-server --daemonize yes   # start in the background
+redis-cli ping                 # should print PONG
+redis-cli shutdown             # stop
+```
+
+Redis started this way does not restart after a reboot, so run the first command again.
+
+On Homebrew Redis 8.x, `brew services start redis` fails: the bundled config loads modules such as `./modules/redisbloom/redisbloom.so` by relative path, and the service starts outside that directory. The log at `/opt/homebrew/var/log/redis.log` ends with `Can't load module ... server aborting`. Starting `redis-server` without the config file avoids this.
+
+To browse keys in IntelliJ: **Database** tool window → **+** → **Data Source** → **Redis**, host `localhost`, port `6379`, no password.
 
 ### Backend
 

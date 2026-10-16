@@ -76,20 +76,24 @@ function buildTable() {
             {
                 data: "tranTime",
             },
+            // 收件資料是會員輸入的，用 text() 顯示，不當成 HTML
             {
                 data: "receiverName",
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "receiverAddress",
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "receiverPhone",
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "receiverMethod",
                 render: function (data, type, row) {
                     // 根据receiverMethod的值返回相应的文本
-                    return data === 0 ? "郵寄" : "宅配";
+                    return receiverMethodText(data);
                 }
             },
             {
@@ -140,17 +144,23 @@ function buildTable() {
             .then(data => {
                 console.log(data);
 
-                let customHtml = '<div>';
+                const order = data[0].itemOrderVO;
+                let customHtml = '<div class="text-start">';
+                customHtml += `<p><span class="item-label">訂單編號：</span>${order.orderNo}　<span class="item-label">訂購日期：</span>${order.tranTime}</p>`;
+                customHtml += `<p><span class="item-label">收件人：</span>${escapeHtml(order.receiverName)}</p>`;
+                customHtml += `<p><span class="item-label">行動電話：</span>${escapeHtml(order.receiverPhone)}</p>`;
+                customHtml += `<p><span class="item-label">收件地址：</span>${escapeHtml(order.receiverAddress)}</p>`;
+                customHtml += `<p><span class="item-label">寄送方式：</span>${receiverMethodText(order.receiverMethod)}</p>`;
+                customHtml += `<p><span class="item-label">訂單金額：</span>${order.orderTotal}</p>`;
+                customHtml += '<hr>';
                 data.forEach(item => {
                     customHtml += `<div class="custom-item">`;
-                    customHtml += `<p><strong>商品名稱：</strong><strong>${item.itemName}</strong></p>`;
+                    customHtml += `<p><strong>商品名稱：</strong><strong>${escapeHtml(item.itemName)}</strong></p>`;
                     customHtml += `<span class="item-label">商品價格：</span><span class="item-value">${item.itemPrice}</span>`;
                     customHtml += `&nbsp;`
                     customHtml += `<span class="item-label">數量：</span><span class="item-value">${item.itemSales}</span>`;
                     customHtml += `&nbsp;`
                     customHtml += `<span class="item-label">合計：</span><span class="item-value">${item.itemPrice * item.itemSales}</span>`;
-                    customHtml += `&nbsp;`
-                    customHtml += `<span class="item-label">訂購日期：</span><span class="item-value">${item.itemOrderVO.tranTime}</span>`;
                     customHtml += '</div>'; // 结束商品信息的<div>
                     customHtml += `<br>`;
                 });
@@ -228,4 +238,15 @@ function buildTable() {
     //             console.error('請求更新時發生錯誤:', error);
     //         });
 
+}
+
+// 寄送方式：0 郵寄、1 超商取貨（OrderUtil.RECEIVER_METHOD_*）
+function receiverMethodText(method) {
+    return method === 1 ? "超商取貨" : "郵寄";
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text == null ? '' : text;
+    return div.innerHTML;
 }
