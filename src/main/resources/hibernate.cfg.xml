@@ -16,19 +16,19 @@
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
 
-		<mapping class="feature.emp.vo.EmpVo" />
-		<mapping class="feature.mem.vo.MemVo" />
-		<mapping class="feature.bid.vo.BidItemVo" />
-		<mapping class="feature.bid.vo.BidItemPicVo" />
-		<mapping class="feature.bid.vo.BidOrderDetailVo" />
-		<mapping class="feature.bid.vo.BidEventVo" />
-		<mapping class="feature.bid.vo.BidOrderVo" />
-		<mapping class="feature.item.vo.Item" />
-		<mapping class="feature.item.vo.ItemClass" />
-		<mapping class="feature.item.vo.ItemImg" />
-		<mapping class="feature.order.vo.ItemOrderVO" />
-		<mapping class="feature.order.vo.ItemOrderDetailVO" />
-		<mapping class="feature.cart.vo.CartTraceVO" />
+		<mapping class="com.polybrain.employee.entity.EmpVo" />
+		<mapping class="com.polybrain.member.entity.MemVo" />
+		<mapping class="com.polybrain.bid.entity.BidItemVo" />
+		<mapping class="com.polybrain.bid.entity.BidItemPicVo" />
+		<mapping class="com.polybrain.bid.entity.BidOrderDetailVo" />
+		<mapping class="com.polybrain.bid.entity.BidEventVo" />
+		<mapping class="com.polybrain.bid.entity.BidOrderVo" />
+		<mapping class="com.polybrain.item.entity.Item" />
+		<mapping class="com.polybrain.item.entity.ItemClass" />
+		<mapping class="com.polybrain.item.entity.ItemImg" />
+		<mapping class="com.polybrain.order.entity.ItemOrderVO" />
+		<mapping class="com.polybrain.order.entity.ItemOrderDetailVO" />
+		<mapping class="com.polybrain.cart.entity.CartTraceVO" />
 
 
 	</session-factory>

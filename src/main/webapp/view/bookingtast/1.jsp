@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="feature.bookingtast.service.*"%>
-<%@page import="feature.bookingtast.vo.*"%>
+<%@page import="com.polybrain.bookingtast.service.*"%>
+<%@page import="com.polybrain.bookingtast.entity.*"%>
 <%
     TablebookingService tabkSvc = new TablebookingService();
     List<TablebookingVO> list = tabkSvc.getAll();

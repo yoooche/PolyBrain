@@ -1,0 +1,20 @@
+package com.polybrain.employee.dao;
+
+import com.polybrain.employee.entity.EmpVo;
+
+import java.util.List;
+public interface EmpDao extends com.polybrain.common.dao.CoreDao<EmpVo, Integer> {
+        Integer insert(EmpVo empVo);
+        Integer deleteById(Integer empNo);
+        Integer updateById(EmpVo empVo);
+        EmpVo selectById(Integer empNo);
+        List<EmpVo> selectAll();
+        EmpVo selectForLogin(String empEmail, String empPwd);
+
+        int getEmpNoByEmail(String email);
+
+
+
+
+        public List<EmpVo> GETEmailPwd();
+}

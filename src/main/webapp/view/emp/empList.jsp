@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="feature.emp.vo.*"%>
+<%@ page import="com.polybrain.employee.entity.*"%>
 <% EmpVo empVo = (EmpVo) request.getAttribute("empVo");%>
 
 <html lang="en">

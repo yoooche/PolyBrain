@@ -1,10 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="feature.order.vo.*"%>
-<%@ page import="feature.order.dao.impl.*"%>
-<%@ page import="feature.order.dao.*"%>
-<%@ page import="feature.order.controller.*"%>
-<%@ page import="feature.order.service.*"%>
+<%@ page import="com.polybrain.order.dto.*, com.polybrain.order.entity.*"%>
+<%@ page import="com.polybrain.order.dao.impl.*"%>
+<%@ page import="com.polybrain.order.dao.*"%>
+<%@ page import="com.polybrain.order.controller.*"%>
+<%@ page import="com.polybrain.order.service.*"%>
 
 <%ItemOrderVO itemordervo = (ItemOrderVO) request.getAttribute("itemorder");%>
 

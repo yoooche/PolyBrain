@@ -1,10 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.*" %>
-<%@ page import="feature.bid.vo.*" %>
-<%@ page import="feature.bid.service.*" %>
-<%@ page import="feature.bid.dao.*" %>
-<%@ page import="feature.bid.dto.*" %>
+<%@ page import="com.polybrain.bid.entity.*" %>
+<%@ page import="com.polybrain.bid.service.*, com.polybrain.bid.service.impl.*" %>
+<%@ page import="com.polybrain.bid.dao.*, com.polybrain.bid.dao.impl.*" %>
+<%@ page import="com.polybrain.bid.dto.*" %>
 
 <% 
 BiddingService biddingService = new BiddingServiceImpl(); 

@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="feature.forum.service.ArtService"%>
-<%@page import="feature.forum.vo.ArtVo"%>
+<%@page import="com.polybrain.forum.service.ArtService"%>
+<%@page import="com.polybrain.forum.entity.ArtVo"%>
 <%
     String itemNo = request.getParameter("itemNo");
     if (itemNo==null) itemNo="1";
