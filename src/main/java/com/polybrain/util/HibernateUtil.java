@@ -28,6 +28,14 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
+    /**
+     * 等這次請求的 transaction（由 HibernateFilter / LoginFilter 開的）成功 commit 後才執行；rollback 就不執行。
+     * 給寄信這類慢、又不能在資料還沒存進去時就做的事用。
+     */
+    public static void runAfterCommit(Runnable task) {
+        getSessionFactory().getCurrentSession().getTransaction().registerSynchronization(new AfterCommitTask(task));
+    }
+
     public static void shutdown() {
         if (registry != null) {
             StandardServiceRegistryBuilder.destroy(registry);

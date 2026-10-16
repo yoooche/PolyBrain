@@ -1,33 +1,28 @@
 package com.polybrain.service;
 
-import com.polybrain.repository.BidOrderDao;
-import com.polybrain.repository.impl.BidOrderDaoImpl;
+import com.polybrain.dto.CartItemImgDTO;
+import com.polybrain.dto.OrderDetailDTO;
 import com.polybrain.model.BidOrderDetailTO;
 import com.polybrain.model.BidOrderTO;
-import com.polybrain.service.CartTraceService;
-import com.polybrain.dto.CartItemImgDTO;
-import com.polybrain.service.impl.ItemServiceImpl;
 import com.polybrain.model.Item;
-import com.polybrain.repository.impl.ItemOrderDAOImpl;
 import com.polybrain.model.ItemOrderDetailTO;
 import com.polybrain.model.ItemOrderTO;
-import com.polybrain.dto.OrderDetailDTO;
+import com.polybrain.model.MemTO;
+import com.polybrain.repository.impl.BidOrderDaoImpl;
+import com.polybrain.repository.impl.ItemOrderDAOImpl;
+import com.polybrain.service.impl.ItemServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.polybrain.util.OrderUtil.ITEM_STATE_SOLD_OUT;
+
 public class OrderService {
+    private final ItemOrderDAOImpl dao = new ItemOrderDAOImpl();
+    private final ItemServiceImpl itemService = new ItemServiceImpl();
 
-    private ItemOrderDAOImpl dao;
-    private ItemServiceImpl ItemServiceDao;
-    private CartTraceService cartTraceServiceDao;
-    private BidOrderDao bidOrderDao;
-
-    public OrderService() {
-        dao = new ItemOrderDAOImpl();
-    }
-
-    public Integer addOrder(Integer memNo, Integer orderTotal, Integer orderState, String receiverName, String receiverAddress, String receiverPhone, Integer receiverMethod) {
+    public Integer addOrder(Integer memNo, Integer orderTotal, Integer orderState, String receiverName,
+                            String receiverAddress, String receiverPhone, Integer receiverMethod) {
         ItemOrderTO itemOrderVO = new ItemOrderTO();
         itemOrderVO.setMemNo(memNo);
         itemOrderVO.setOrderTotal(orderTotal);
@@ -36,7 +31,6 @@ public class OrderService {
         itemOrderVO.setReceiverAddress(receiverAddress);
         itemOrderVO.setReceiverPhone(receiverPhone);
         itemOrderVO.setReceiverMethod(receiverMethod);
-
         return dao.insert(itemOrderVO);
     }
 
@@ -44,119 +38,88 @@ public class OrderService {
         return dao.selectById(orderNo);
     }
 
-
     public List<ItemOrderTO> getAll() {
-        System.out.println("aaa");
         return dao.selectAll();
     }
 
-    public ItemOrderTO updateBackOrder(ItemOrderTO itemordervo) {
-
-//        OrderService odsvc = new OrderService();
-//        System.out.println(itemordervo.getOrderNo());
-//        ItemOrderTO itemordervoDB =dao.selectById(itemordervo.getOrderNo());
-//        ItemOrderTO itemordervoDB = odsvc.getOneOrder(orderNo);
-//        itemordervo.setOrderNo(itemordervo.getOrderNo());
-//        itemordervo.setMemNo(itemordervo.getMemNo());
-//        itemordervo.setReceiverAddress(itemordervo.getReceiverAddress());
-//        itemordervo.setReceiverName(itemordervo.getReceiverName());
-//        itemordervo.setReceiverPhone(itemordervo.getReceiverPhone());
-//
-//        itemordervo.setOrderTotal(itemordervoDB.getOrderTotal());
-//        itemordervo.setReceiverMethod(itemordervoDB.getReceiverMethod());
-//        itemordervo.setOrderState(itemordervoDB.getOrderState());
-//        itemordervo.setTranTime(itemordervoDB.getTranTime());
-//        System.out.println("jdbcgood");
-        return dao.updateAnOrder(itemordervo);
+    public void updateBackOrder(ItemOrderTO itemOrderVO) {
+        dao.updateAnOrder(itemOrderVO);
     }
 
-    public boolean deleteById(Integer orderNo) {
-        try {
-            dao.deleteDetailById(orderNo);
-            dao.deleteById(orderNo) ;
-            return true;
-        }catch (Exception e) {
-            return false;
+    /** 失敗會丟例外，讓 Filter rollback，不會只刪掉明細或只刪掉訂單 */
+    public void deleteById(Integer orderNo) {
+        dao.deleteDetailById(orderNo);
+        dao.deleteById(orderNo);
+    }
+
+    /** 同一個會員同時只能有一筆結帳在跑；要在讀購物車之前呼叫，鎖到這次請求 commit 為止 */
+    public MemTO lockMember(Integer memNo) {
+        return dao.lockMember(memNo);
+    }
+
+    /**
+     * 鎖住購物車裡每個商品的庫存，並把購物車上的庫存換成最新數字，之後再檢查庫存才準。
+     * cartItems 要照商品編號排序（CartTraceDao.selectAll 已經排好）：大家照同樣順序上鎖，才不會互相等待卡死。
+     */
+    public void lockStock(List<CartItemImgDTO> cartItems) {
+        for (CartItemImgDTO cartItem : cartItems) {
+            cartItem.setItemQty(dao.lockItem(cartItem.getItemNo()).getItemQty());
         }
     }
 
-    public Integer addAnOrderDetail(List<CartItemImgDTO> cartItemImgDTOList, Integer orderNo ,Integer memNo) {
-        ItemServiceDao = new ItemServiceImpl();
-        cartTraceServiceDao = new CartTraceService();
-        for (int i = 0; i < cartItemImgDTOList.size(); i++) {
+    /** 寫入訂單明細、扣庫存、加銷售量，再把這些商品從購物車移除 */
+    public void addAnOrderDetail(List<CartItemImgDTO> cartItems, Integer orderNo, Integer memNo) {
+        CartTraceService cartTraceService = new CartTraceService();
+        for (CartItemImgDTO cartItem : cartItems) {
+            dao.insertAnDetail(new ItemOrderDetailTO(orderNo, cartItem.getItemNo(), cartItem.getQuantity(), cartItem.getItemPrice()));
 
-
-            ItemOrderDetailTO itemOrderDetailVO =
-                    new ItemOrderDetailTO(orderNo,
-                            cartItemImgDTOList.get(i).getItemNo(),
-                            cartItemImgDTOList.get(i).getQuantity(),
-                            cartItemImgDTOList.get(i).getItemPrice());
-            dao.insertAnDetail(itemOrderDetailVO);
-
-            Item item = new Item();
-            item = ItemServiceDao.FindByItemId(cartItemImgDTOList.get(i).getItemNo());
-            item.setItemPrice(item.getItemPrice());
-            item.setItemProdDescription(item.getItemProdDescription());
-
-            if (cartItemImgDTOList.get(i).getItemQty() - cartItemImgDTOList.get(i).getQuantity() == 0) {
-                item.setItemState(2);
+            // 用資料庫現在的庫存來扣，不用購物車讀出來時的數字
+            Item item = itemService.FindByItemId(cartItem.getItemNo());
+            int remainQty = item.getItemQty() - cartItem.getQuantity();
+            if (remainQty <= 0) {
+                item.setItemState(ITEM_STATE_SOLD_OUT);
             }
-            item.setItemQty(cartItemImgDTOList.get(i).getItemQty() - cartItemImgDTOList.get(i).getQuantity());
+            item.setItemQty(remainQty);
+            itemService.edit(item);
+            // Item.itemSales 是 updatable = false，只能另外用 HQL 加
+            dao.addItemSales(item.getItemNo(), cartItem.getQuantity());
 
-            ItemServiceDao.edit(item);
-            System.out.println("商品總數更改成功");
-
-
-
-            cartTraceServiceDao.deleteByMemItemNo(memNo, cartItemImgDTOList.get(i).getItemNo());
-            System.out.println("哈囉" + cartItemImgDTOList.get(i).getItemNo());
-            System.out.println("購物車刪除成功");
-
+            cartTraceService.deleteByMemItemNo(memNo, cartItem.getItemNo());
         }
-
-        return 1;
     }
 
     public List<ItemOrderTO> selectFromMemNo(Integer memNo) {
         return dao.selectByMemberNumber(memNo);
     }
 
-    public  List<OrderDetailDTO> selectOrderDetail(Integer orderNo){
-        ItemServiceDao = new ItemServiceImpl();
-        List<Item> itemList = new ArrayList<Item>();
+    public List<OrderDetailDTO> selectOrderDetail(Integer orderNo) {
         ItemOrderTO itemOrderVO = dao.selectById(orderNo);
-        List<ItemOrderDetailTO> itemOrderDetailVOList = dao.getDetailByOrderNumber(orderNo);
-        List<OrderDetailDTO> orderDetailDTOList = new ArrayList<OrderDetailDTO>();
-
-        for (int i =0; i< itemOrderDetailVOList.size(); i++){
-            OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
-            itemList.add(ItemServiceDao.FindByItemId(itemOrderDetailVOList.get(i).getItemNo()));
-
-            orderDetailDTO.setItemOrderVO(itemOrderVO);
-            orderDetailDTO.setItemSales(itemOrderDetailVOList.get(i).getItemSales());
-            orderDetailDTO.setItemPrice(itemList.get(i).getItemPrice());
-//            orderDetailDTO.setItemImg(itemList.get(i).getItemImg().get(0).getItemImg());
-            orderDetailDTO.setItemName(itemList.get(i).getItemName());
-            orderDetailDTOList.add(orderDetailDTO);
+        List<OrderDetailDTO> orderDetails = new ArrayList<>();
+        for (ItemOrderDetailTO detail : dao.getDetailByOrderNumber(orderNo)) {
+            OrderDetailDTO orderDetail = new OrderDetailDTO();
+            orderDetail.setItemOrderVO(itemOrderVO);
+            orderDetail.setItemSales(detail.getItemSales());
+            // 用下單當時記在明細上的價格，商品之後改價也不影響舊訂單
+            orderDetail.setItemPrice(detail.getItemPrice());
+            orderDetail.setItemName(itemService.FindByItemId(detail.getItemNo()).getItemName());
+            orderDetails.add(orderDetail);
         }
-
-        return orderDetailDTOList;
+        return orderDetails;
     }
 
-    public Integer addBidOrderDetail (BidOrderDetailTO bidOrderDetailVo){
+    public Integer addBidOrderDetail(BidOrderDetailTO bidOrderDetailVo) {
         return dao.insertBidOrderDetail(bidOrderDetailVo);
     }
+
     public BidOrderTO getBidOneOrder(Integer orderNo) {
-        bidOrderDao = new BidOrderDaoImpl();
-        return bidOrderDao.selectById(orderNo);
+        return new BidOrderDaoImpl().selectById(orderNo);
     }
-    public List<BidOrderDetailTO> getBidAllOrder(){
+
+    public List<BidOrderDetailTO> getBidAllOrder() {
         return dao.selectBidOrder();
     }
-    public List<BidOrderDetailTO> getBidOrderByMem(Integer memNo){
+
+    public List<BidOrderDetailTO> getBidOrderByMem(Integer memNo) {
         return dao.findBidOrderDetailsByMemNo(memNo);
     }
-
-
-
 }

@@ -1,19 +1,21 @@
 package com.polybrain.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(OrderDetailId.class)
-@Table(name="order_detail")
+@Table(name = "ORDER_DETAIL")
 public class ItemOrderDetailTO {
         @Id
         @Column(name="ORDER_NO" ,insertable = false,updatable = false)

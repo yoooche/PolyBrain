@@ -57,8 +57,8 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container px-5">
-                <a class="navbar-brand" href="../bid/BidOnHomePage.html">
-                    <img src="../logo/PolyBrain_Logo.png" style="width: 110px; height: auto; margin-bottom: 5px;"></a>
+                <a class="navbar-brand" href="${pageContext.request.contextPath}/view/bid/BidOnHomePage.html">
+                    <img src="${pageContext.request.contextPath}/view/logo/PolyBrain_Logo.png" style="width: 110px; height: auto; margin-bottom: 5px;"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation"><span
@@ -71,36 +71,36 @@
                             <a class="nav-link dropdown-toggle" id="buyitem" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">商城</a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                <li><a class="dropdown-item" href="../item/search.html">商品資訊</a></li>
-                                <li><a class="dropdown-item" href="../order/memberOrder.html">商城訂單查詢</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/view/item/search.html">商品資訊</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/view/order/memberOrder.html">商城訂單查詢</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="buybid" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">競標</a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                <li><a class="dropdown-item" href="../bid/BidOnHomePage.html">熱門競標</a></li>
-                                <li><a class="dropdown-item" href="../order/bidOrderFront.html">競標訂單查詢</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/view/bid/BidOnHomePage.html">熱門競標</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/view/order/bidOrderFront.html">競標訂單查詢</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="mybooking" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">預約場地</a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                <li><a class="dropdown-item" href="../book/Calendar.html">現在預約</a></li>
-                                <li><a class="dropdown-item" href="../book/BookingCheck.html">預約場地查詢</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/view/book/Calendar.html">現在預約</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/view/book/BookingCheck.html">預約場地查詢</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="discuss" href="../forum/mainpage/index.jsp" role="button">討論區</a>
+                            <a class="nav-link" id="discuss" href="${pageContext.request.contextPath}/view/forum/mainpage/index.jsp" role="button">討論區</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="memberdistrict" href="../member/Member_Information.jsp"
+                            <a class="nav-link" id="memberdistrict" href="${pageContext.request.contextPath}/view/member/Member_Information.jsp"
                                 role="button">會員中心</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="../head/question.html">常見問題</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/view/head/question.html">常見問題</a></li>
                         <li>
-                            <a href="../CartTrace/Cart.jsp" id="submitLink"
+                            <a href="${pageContext.request.contextPath}/view/CartTrace/Cart.jsp" id="submitLink"
                                 class="btn btn-outline-dark" style="color: #ffffff">
                                 <i class="bi-cart-fill me-1" style="color: #ffffff"></i>
                                 購物車
@@ -152,21 +152,20 @@
                 <div class="col-md-8 order-md-1 mt-5">
                     
                     <form method="post" action="/PolyBrain/loginRequired/ConfirmOrder" id="confirmOrder">
-                        <input type="hidden" id="orderTotal1" name="orderTotal" value="">
                         <div class="container">
                             <h4 class="mb-3">填寫付款資訊</h4>
 
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="receiverName">收件人姓名：</label>
-                                    <input type="text" id="receiverName" name="receiverName" class="form-control">
+                                    <input type="text" id="receiverName" name="receiverName" class="form-control" value="<c:out value="${checkoutReceiver.receiverName}"/>">
                                     <p style="display: block; color: red; padding: 0px 3px;">
                                         ${errorMsgs["receiverName"]}
                                     </p>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="receiverPhone">收件人電話：</label>
-                                    <input type="text" id="receiverPhone" name="receiverPhone" class="form-control">
+                                    <input type="text" id="receiverPhone" name="receiverPhone" class="form-control" value="<c:out value="${checkoutReceiver.receiverPhone}"/>">
                                     <p style="display: block; color: red; padding: 0px 3px">
                                         ${errorMsgs["receiverPhone"]}
                                     </p>
@@ -185,7 +184,7 @@
                                 </div>
                                 <div>
                                     <label for="receiverAddress">收件人地址：</label>
-                                    <input type="text" id="receiverAddress" name="receiverAddress" class="form-control">
+                                    <input type="text" id="receiverAddress" name="receiverAddress" class="form-control" value="<c:out value="${checkoutReceiver.receiverAddress}"/>">
                                     <p style="display: block; color: red; padding: 0px 3px">
                                         ${errorMsgs["receiverAddress"]}
                                     </p>
@@ -198,16 +197,21 @@
                                 <label for="receiverMethod">寄送方式：</label>
                             <select id="receiverMethod" class="form-select form-select-sm"  name="receiverMethod" required aria-label="Small select example">
                                 <option value="default" selected>請選擇寄送方式...</option>
-                                <option value="mail">郵寄</option>
-                                <option value="storePickup">超商取貨</option>
+                                <option value="mail" ${checkoutReceiver.receiverMethod == 'mail' ? 'selected' : ''}>郵寄</option>
+                                <option value="storePickup" ${checkoutReceiver.receiverMethod == 'storePickup' ? 'selected' : ''}>超商取貨</option>
                             </select>
+                            <p style="display: block; color: red; padding: 0px 3px">
+                                ${errorMsgs["receiverMethod"]}
+                            </p>
+                            <%-- 縣市地區沒選（前端檢查）、購物車是空的或庫存不足（後端檢查）都顯示在這 --%>
+                            <p id="errorMsg" style="display: block; color: red; padding: 0px 3px"><c:out value='${errorMsgs["noConfirmOrder"]}'/></p>
                             </div>
                             <div class="row justify-content-end" id="btnnnnn">
                                 <div class="col-md-6 text-end">
                                 <a href="http://localhost:8080/PolyBrain/view/item/search.html" class="btn btn-secondary btn-lg canceled">返回商城</a>
-                                <input type="hidden" name="action" value="orderConfirm" id="actionInput">
-                                <button id="submitBtn" type="submit" class="btn btn-primary btn-lg" id="orderConfirmBtn" onsubmit="return validateForm()"">
-                                        結帳
+                                <input type="hidden" name="action" value="preview" id="actionInput">
+                                <button id="submitBtn" type="submit" class="btn btn-primary btn-lg">
+                                        下一步：確認訂單
                                 </button>
                                 </div>
                             </div>
@@ -224,6 +228,8 @@
 
         $('.twzipcode').twzipcode({
             zipcodeIntoDistrict: true,
+            countySel: '<c:out value="${checkoutReceiver.county}"/>', // 資料有錯被退回、或從確認頁返回修改時，帶回剛才選的縣市、地區
+            districtSel: '<c:out value="${checkoutReceiver.district}"/>',
             'css': ['county', 'district'],
             // countyName: 'city_name',
             // districtName: 'district_name',
@@ -237,15 +243,12 @@
         var transFormPriceElement = document.querySelector('#transFormPrice');
         var cartPriceElements = document.querySelectorAll('.cartPrice');
         var orderTotal = document.querySelector('#orderTotal')
-        var orderTotal1 = document.querySelector('#orderTotal1')
-        var orderConfirmBtn = document.querySelector('#orderConfirmBtn');
         var total = 0;
 
         for (var i = 0; i < cartPriceElements.length; i++) {
             total += parseInt(cartPriceElements[i].textContent.match(/\d+/));
         }
         orderTotal.textContent = "總計: " + total;
-        orderTotal1.value = total ;
 
         var receiverMethodElement = document.querySelector('#receiverMethod');
         receiverMethodElement.addEventListener('change', function () {

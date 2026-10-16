@@ -1,10 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PolyBrain 訂單成立</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-$END$
+<body class="bg-light">
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="../item/search.html">
+            <img src="../logo/PolyBrain_Logo.png" alt="PolyBrain" style="width: 110px; height: auto;">
+        </a>
+    </div>
+</nav>
+
+<main class="container py-5" style="max-width: 640px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4 text-center">
+            <h1 class="h3 mb-3">訂單已成立</h1>
+            <p class="text-muted mb-4">感謝您的購買，確認信會寄到您的會員信箱。</p>
+
+            <!-- 找不到訂單時整塊隱藏，只留按鈕 -->
+            <table class="table text-start mb-4" id="orderInfo" hidden>
+                <tbody>
+                <tr><th scope="row" style="width: 35%;">訂單編號</th><td id="orderNo"></td></tr>
+                <tr><th scope="row">訂單金額</th><td id="orderTotal"></td></tr>
+                <tr><th scope="row">收件人</th><td id="receiverName"></td></tr>
+                <tr><th scope="row">行動電話</th><td id="receiverPhone"></td></tr>
+                <tr><th scope="row">收件地址</th><td id="receiverAddress"></td></tr>
+                <tr><th scope="row">寄送方式</th><td id="receiverMethod"></td></tr>
+                </tbody>
+            </table>
+
+            <a href="memberOrder.html" class="btn btn-primary btn-lg me-2">查看我的訂單</a>
+            <a href="../item/search.html" class="btn btn-outline-secondary btn-lg">繼續逛商城</a>
+        </div>
+    </div>
+</main>
+
+<script>
+    const orderNo = Number(new URLSearchParams(location.search).get('orderNo'));
+
+    // 用會員自己的訂單列表找這一筆，所以只看得到自己的訂單
+    fetch('/PolyBrain/loginRequired/findAllOrder', {method: 'POST'})
+        .then(resp => {
+            if (resp.status === 401) {
+                location.href = '/PolyBrain/view/member/login.html';
+                throw new Error('未登入');
+            }
+            return resp.json();
+        })
+        .then(orders => {
+            const order = orders.find(o => o.orderNo === orderNo);
+            if (!order) return;
+            document.querySelector('#orderNo').textContent = order.orderNo;
+            document.querySelector('#orderTotal').textContent = 'NT$ ' + order.orderTotal;
+            document.querySelector('#receiverName').textContent = order.receiverName;
+            document.querySelector('#receiverPhone').textContent = order.receiverPhone;
+            document.querySelector('#receiverAddress').textContent = order.receiverAddress;
+            document.querySelector('#receiverMethod').textContent = order.receiverMethod === 1 ? '超商取貨' : '郵寄';
+            document.querySelector('#orderInfo').hidden = false;
+        })
+        .catch(error => console.error('讀取訂單失敗', error));
+</script>
 </body>
 </html>

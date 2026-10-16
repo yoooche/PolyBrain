@@ -1,39 +1,40 @@
 package com.polybrain.model;
 
-import com.polybrain.model.Core;
-import com.polybrain.model.MemTO;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "item_order")
+@Table(name = "ITEM_ORDER")
 public class ItemOrderTO extends Core {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //若資料庫 PK欄位名稱與VO名稱不一致,仍須@Column
-    @Column(name="ORDER_NO")
+    @Column(name = "ORDER_NO")
     private Integer orderNo;
-    @Column(name="MEM_NO")
+    @Column(name = "MEM_NO")
     private Integer memNo;
-    //資料庫有預設資料, insertable就要是false(跳過此欄位)
-    @Column(name="TRAN_TIME",insertable = false)
+    // 由資料庫預設值填入下單日期
+    @Column(name = "TRAN_TIME", insertable = false)
     private Date tranTime;
-    @Column(name="ORDER_TOTAL",updatable = false)
+    @Column(name = "ORDER_TOTAL", updatable = false)
     private Integer orderTotal;
-    @Column(name="ORDER_STATE")
+    @Column(name = "ORDER_STATE")
     private Integer orderState;
-    @Column(name="RECEIVER_NAME")
+    @Column(name = "RECEIVER_NAME")
     private String receiverName;
-    @Column(name="RECEIVER_ADDRESS")
+    @Column(name = "RECEIVER_ADDRESS")
     private String receiverAddress;
-    @Column(name="RECEIVER_PHONE")
+    @Column(name = "RECEIVER_PHONE")
     private String receiverPhone;
-    @Column(name="RECEIVER_METHOD")
+    @Column(name = "RECEIVER_METHOD")
     private Integer receiverMethod;
-    @OneToOne
-    @JoinColumn(name="MEM_NO", insertable = false, updatable = false)
-    private MemTO memVo;
 }

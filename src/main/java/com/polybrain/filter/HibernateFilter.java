@@ -14,7 +14,7 @@ import com.polybrain.util.HibernateUtil;
 
 import java.io.IOException;
 
-@WebFilter(filterName="customFilter",urlPatterns={"/general/*","*.jsp"})
+@WebFilter(filterName="customFilter",urlPatterns={"/general/*","*.jsp","*.tw"})
 public class HibernateFilter extends HttpFilter {
 	private static final long serialVersionUID = 1L;
 

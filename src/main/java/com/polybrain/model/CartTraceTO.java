@@ -1,66 +1,30 @@
 package com.polybrain.model;
 
-import com.polybrain.model.Item;
-import com.polybrain.model.ItemImg;
-import com.polybrain.model.MemTO;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @Entity
-@Table(name="cart")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "CART")
 @IdClass(CartTraceId.class)
-
 public class CartTraceTO {
     @Id
-    @Column(name="MEM_NO", updatable = false)
+    @Column(name = "MEM_NO", updatable = false)
     private Integer memNo;
     @Id
-    @Column(name="ITEM_NO", updatable = false)
+    @Column(name = "ITEM_NO", updatable = false)
     private Integer itemNo;
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private Integer quantity;
-
-    public CartTraceTO() {
-        super();
-    }
-
-    public CartTraceTO(Integer memNo, Integer itemNo, Integer quantity) {
-        this.memNo = memNo;
-        this.itemNo = itemNo;
-        this.quantity = quantity;
-    }
-
-    public Integer getMemNo() {
-        return memNo;
-    }
-
-    public void setMemNo(Integer memNo) {
-        this.memNo = memNo;
-    }
-
-    public Integer getItemNo() {
-        return itemNo;
-    }
-
-    public void setItemNo(Integer itemNo) {
-        this.itemNo = itemNo;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
 }
-
-
-

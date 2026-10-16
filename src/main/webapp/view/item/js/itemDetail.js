@@ -152,6 +152,8 @@ function addCart(itemNo) {
                     showConfirmButton: false,
                     timer: 1500
                 })
+            } else {
+                Swal.fire({ icon: 'error', title: '已售完或庫存不足' })
             }
         })
         .catch(error => {

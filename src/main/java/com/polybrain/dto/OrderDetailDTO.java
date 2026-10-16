@@ -1,12 +1,14 @@
 package com.polybrain.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import com.polybrain.model.ItemOrderTO;
 
-@Data
+@Getter
+@Setter
 public class OrderDetailDTO {
-    Integer itemSales;
-    Integer itemPrice;
-    String itemName;
-    ItemOrderTO itemOrderVO;
+    private Integer itemSales;
+    private Integer itemPrice;
+    private String itemName;
+    private ItemOrderTO itemOrderVO;
 }
