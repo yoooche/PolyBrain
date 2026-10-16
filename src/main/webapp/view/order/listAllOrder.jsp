@@ -1,11 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ page import="java.util.*" %>
-            <%@ page import="feature.order.dao.*" %>
-                <%@ page import="feature.order.vo.*" %>
-                    <%@ page import="feature.order.service.*" %>
+            <%@ page import="com.polybrain.repository.*" %>
+                <%@ page import="com.polybrain.dto.*, com.polybrain.model.*" %>
+                    <%@ page import="com.polybrain.service.*" %>
 
-                        <% OrderService ordSvc=new OrderService(); List<ItemOrderVO> list = ordSvc.getAll();
+                        <% OrderService ordSvc=new OrderService(); List<ItemOrderTO> list = ordSvc.getAll();
                             pageContext.setAttribute("orderVOlist",list);
                             %>
 

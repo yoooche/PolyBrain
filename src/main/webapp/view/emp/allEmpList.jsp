@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="feature.emp.service.*"%>
-<%@page import="feature.emp.controller.*"%>
-<%@page import="feature.emp.dao.*"%>
-<%@page import="feature.emp.vo.*"%>
+<%@page import="com.polybrain.service.*, com.polybrain.service.impl.*"%>
+<%@page import="com.polybrain.controller.*"%>
+<%@page import="com.polybrain.repository.*, com.polybrain.repository.impl.*"%>
+<%@page import="com.polybrain.model.*"%>
 
     <link href="http://localhost:8080/PolyBrain/view/member/css/styles.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/cb31023646.js" crossorigin="anonymous"></script>
@@ -12,7 +12,7 @@
 
 <%
     allEmpListService empSvc = new allEmpListService();
-    List<EmpVo> list = empSvc.getAll();
+    List<EmpTO> list = empSvc.getAll();
     pageContext.setAttribute("empList",list);
 %>
 

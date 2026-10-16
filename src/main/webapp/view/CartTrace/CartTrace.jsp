@@ -1,11 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
-<%@ page import="feature.cart.dao.*"%>
-<%@ page import="feature.cart.vo.*"%>
-<%@ page import="feature.item.vo.*"%>
-<%@ page import="feature.cart.service.*"%>
-<%@ page import="feature.cart.vo.*"%>
+<%@ page import="com.polybrain.repository.*"%>
+<%@ page import="com.polybrain.dto.*, com.polybrain.model.*"%>
+<%@ page import="com.polybrain.model.*"%>
+<%@ page import="com.polybrain.service.*"%>
+<%@ page import="com.polybrain.dto.*, com.polybrain.model.*"%>
 
 <%@ page isELIgnored="false"%>
 

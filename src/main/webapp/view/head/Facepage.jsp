@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="feature.forum.service.ArtService"%>
-<%@page import="feature.forum.vo.ArtVo"%>
+<%@page import="com.polybrain.service.ArtService"%>
+<%@page import="com.polybrain.model.ArtTO"%>
 <%
     String itemNo = request.getParameter("itemNo");
     if (itemNo==null) itemNo="1";
     ArtService artSvc = new ArtService();
-    List<ArtVo> list = artSvc.findByItemNo(Integer.valueOf(itemNo));
+    List<ArtTO> list = artSvc.findByItemNo(Integer.valueOf(itemNo));
     if(request.getAttribute("ArtListData")==null) pageContext.setAttribute("ArtListData",list);
 %>
 
@@ -295,10 +295,10 @@
                                                       </tr>
                                                  </thead>
                                                  <tbody>
-                                                      <c:forEach var="ArtVo" items="${ArtListData}" begin="0" end="2">
+                                                      <c:forEach var="ArtTO" items="${ArtListData}" begin="0" end="2">
                                                       <tr>
-                                                            <td>${ArtVo.artNo}</td>
-                                                            <td class="table-title"><a href="../forum/innerpage/detail.jsp?artNo=${ArtVo.artNo}">${ArtVo.artTitle}</a></td>
+                                                            <td>${ArtTO.artNo}</td>
+                                                            <td class="table-title"><a href="../forum/innerpage/detail.jsp?artNo=${ArtTO.artNo}">${ArtTO.artTitle}</a></td>
                                                       </tr>
                                                       </c:forEach>
                                                  </tbody>
@@ -319,10 +319,10 @@
                                                       </tr>
                                                  </thead>
                                                  <tbody>
-                                                      <c:forEach var="ArtVo" items="${ArtListData}" begin="0" end="2">
+                                                      <c:forEach var="ArtTO" items="${ArtListData}" begin="0" end="2">
                                                       <tr>
-                                                            <td>${ArtVo.artNo}</td>
-                                                            <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtVo.artNo}">${ArtVo.artTitle}</a></td>
+                                                            <td>${ArtTO.artNo}</td>
+                                                            <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtTO.artNo}">${ArtTO.artTitle}</a></td>
                                                       </tr>
                                                       </c:forEach>
                                                  </tbody>
@@ -343,10 +343,10 @@
                                                       </tr>
                                                  </thead>
                                                  <tbody>
-                                                      <c:forEach var="ArtVo" items="${ArtListData}" begin="0" end="2">
+                                                      <c:forEach var="ArtTO" items="${ArtListData}" begin="0" end="2">
                                                       <tr>
-                                                            <td>${ArtVo.artNo}</td>
-                                                            <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtVo.artNo}">${ArtVo.artTitle}</a></td>
+                                                            <td>${ArtTO.artNo}</td>
+                                                            <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtTO.artNo}">${ArtTO.artTitle}</a></td>
                                                       </tr>
                                                       </c:forEach>
                                                  </tbody>
@@ -367,10 +367,10 @@
                                                        </tr>
                                                   </thead>
                                                   <tbody>
-                                                       <c:forEach var="ArtVo" items="${ArtListData}" begin="0" end="2">
+                                                       <c:forEach var="ArtTO" items="${ArtListData}" begin="0" end="2">
                                                        <tr>
-                                                             <td>${ArtVo.artNo}</td>
-                                                             <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtVo.artNo}">${ArtVo.artTitle}</a></td>
+                                                             <td>${ArtTO.artNo}</td>
+                                                             <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtTO.artNo}">${ArtTO.artTitle}</a></td>
                                                        </tr>
                                                        </c:forEach>
                                                   </tbody>
@@ -391,10 +391,10 @@
                                                         </tr>
                                                    </thead>
                                                    <tbody>
-                                                        <c:forEach var="ArtVo" items="${ArtListData}" begin="0" end="2">
+                                                        <c:forEach var="ArtTO" items="${ArtListData}" begin="0" end="2">
                                                         <tr>
-                                                              <td>${ArtVo.artNo}</td>
-                                                              <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtVo.artNo}">${ArtVo.artTitle}</a></td>
+                                                              <td>${ArtTO.artNo}</td>
+                                                              <td class="table-title"><a href="..../forum/innerpage/detail.jsp?artNo=${ArtTO.artNo}">${ArtTO.artTitle}</a></td>
                                                         </tr>
                                                         </c:forEach>
                                                    </tbody>

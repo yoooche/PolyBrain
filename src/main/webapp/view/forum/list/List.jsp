@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="feature.forum.service.ArtService"%>
-<%@page import="feature.forum.vo.ArtVo"%>
+<%@page import="com.polybrain.service.ArtService"%>
+<%@page import="com.polybrain.model.ArtTO"%>
 
 <%
     ArtService artSvc = new ArtService();
-    List<ArtVo> list = artSvc.findByItemNo(Integer.valueOf(request.getParameter("itemNo")));
+    List<ArtTO> list = artSvc.findByItemNo(Integer.valueOf(request.getParameter("itemNo")));
     if(request.getAttribute("ArtListData")==null) pageContext.setAttribute("ArtListData",list);
 %>
 <!DOCTYPE html>
@@ -137,17 +137,17 @@
   </thead>
 
  <tbody>
-	<c:forEach var="ArtVo" items="${ArtListData}" varStatus="s">
+	<c:forEach var="ArtTO" items="${ArtListData}" varStatus="s">
 		<tr>
             <td>${s.count}</td>
-			<td>${ArtVo.artNo}</td>
-			<td>${ArtVo.memNo}</td>
-			<td><a href="../innerpage/detail.jsp?artNo=${ArtVo.artNo}">${ArtVo.artTitle}</a></td>
+			<td>${ArtTO.artNo}</td>
+			<td>${ArtTO.memNo}</td>
+			<td><a href="../innerpage/detail.jsp?artNo=${ArtTO.artNo}">${ArtTO.artTitle}</a></td>
 			<td>
-                <fmt:formatDate value="${ArtVo.artTime}" pattern="yyyy-MM-dd HH:mm:ss" />
+                <fmt:formatDate value="${ArtTO.artTime}" pattern="yyyy-MM-dd HH:mm:ss" />
             </td>
 
-			<td><img src="<%=request.getContextPath()%>/Art/DBGifReader?artNo=${ArtVo.artNo}" width="100px"></td>
+			<td><img src="<%=request.getContextPath()%>/Art/DBGifReader?artNo=${ArtTO.artNo}" width="100px"></td>
 		</tr>
 	</c:forEach>
   </tbody>

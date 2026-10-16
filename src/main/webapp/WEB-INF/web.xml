@@ -14,7 +14,7 @@
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>ArtServlet</servlet-name>
-		<servlet-class>feature.forum.controller.ArtServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.ArtServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ArtServlet</servlet-name>
@@ -22,7 +22,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RegistServlet</servlet-name>
-		<servlet-class>feature.mem.controller.RegistServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.RegistServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegistServlet</servlet-name>
@@ -31,7 +31,7 @@
 
 	<servlet>
 		<servlet-name>loginServlet</servlet-name>
-		<servlet-class>feature.mem.controller.loginServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.loginServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>loginServlet</servlet-name>
@@ -40,7 +40,7 @@
 
 	<servlet>
 		<servlet-name>listallmemServlet</servlet-name>
-		<servlet-class>feature.mem.controller.listallmemServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.listallmemServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>listallmemServlet</servlet-name>
@@ -49,7 +49,7 @@
 
 	<servlet>
 		<servlet-name>MemInformationServlet</servlet-name>
-		<servlet-class>feature.mem.controller.MemInformationServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.MemInformationServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>MemInformationServlet</servlet-name>
@@ -58,7 +58,7 @@
 
 	<servlet>
 		<servlet-name>addmemServlet</servlet-name>
-		<servlet-class>feature.mem.controller.addmemServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.addmemServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>addmemServlet</servlet-name>
@@ -67,7 +67,7 @@
 
 	<servlet>
 		<servlet-name>allEmpListServlet</servlet-name>
-		<servlet-class>feature.emp.controller.allEmpListServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.allEmpListServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>allEmpListServlet</servlet-name>
@@ -76,7 +76,7 @@
 
 	<servlet>
 		<servlet-name>addEmpServlet</servlet-name>
-		<servlet-class>feature.emp.controller.addEmpServlet</servlet-class>
+		<servlet-class>com.polybrain.controller.addEmpServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>addEmpServlet</servlet-name>

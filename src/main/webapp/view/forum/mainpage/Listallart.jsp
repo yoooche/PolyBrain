@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.*"%>
-<%@page import="feature.forum.service.ArtService"%>
-<%@page import="feature.forum.vo.ArtVo"%>
+<%@page import="com.polybrain.service.ArtService"%>
+<%@page import="com.polybrain.model.ArtTO"%>
 
 <%
     ArtService artSvc = new ArtService();
-    List<ArtVo> list = artSvc.getAll();
+    List<ArtTO> list = artSvc.getAll();
     if(request.getAttribute("ArtListData")==null) pageContext.setAttribute("ArtListData",list);
 %>
 <!DOCTYPE html>
@@ -82,22 +82,22 @@ body {
   </thead>
 
  <tbody>
-	<c:forEach var="ArtVo" items="${ArtListData}" varStatus="s">
+	<c:forEach var="ArtTO" items="${ArtListData}" varStatus="s">
 		<tr>
             <td>${s.count}</td>
-			<td>${ArtVo.artNo}</td>
-			<td>${ArtVo.memNo}</td>
-			<td>${ArtVo.artTitle}</td>
-			<td>${ArtVo.artCon}</td>
+			<td>${ArtTO.artNo}</td>
+			<td>${ArtTO.memNo}</td>
+			<td>${ArtTO.artTitle}</td>
+			<td>${ArtTO.artCon}</td>
 			<td>
-                <fmt:formatDate value="${ArtVo.artTime}" pattern="yyyy-MM-dd HH:mm:ss" />
+                <fmt:formatDate value="${ArtTO.artTime}" pattern="yyyy-MM-dd HH:mm:ss" />
             </td>
 			<td>
                         <c:choose>
-                            <c:when test="${ArtVo.artState == 0}">
+                            <c:when test="${ArtTO.artState == 0}">
                                 未上架
                             </c:when>
-                            <c:when test="${ArtVo.artState == 1}">
+                            <c:when test="${ArtTO.artState == 1}">
                                 已上架
                             </c:when>
                             <c:otherwise>
@@ -105,18 +105,18 @@ body {
                             </c:otherwise>
                         </c:choose>
                     </td>
-			<td>${ArtVo.itemNo}</td>
-			<td><img src="<%=request.getContextPath()%>/Art/DBGifReader?artNo=${ArtVo.artNo}" width="100px"></td>
+			<td>${ArtTO.itemNo}</td>
+			<td><img src="<%=request.getContextPath()%>/Art/DBGifReader?artNo=${ArtTO.artNo}" width="100px"></td>
 			<td>
 			  <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/Art/Art.do" style="margin-bottom: 0px;">
 			     <input type="submit" value="修改">
-			     <input type="hidden" name="artNo" value="${ArtVo.artNo}">
+			     <input type="hidden" name="artNo" value="${ArtTO.artNo}">
 			     <input type="hidden" name="action"	value="getOne_For_Update"></FORM>
 			</td>
 			<td>
 			  <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/Art/Art.do" style="margin-bottom: 0px;">
 			     <input type="submit" value="刪除">
-			     <input type="hidden" name="artNo" value="${ArtVo.artNo}">
+			     <input type="hidden" name="artNo" value="${ArtTO.artNo}">
 			     <input type="hidden" name="action" value="delete"></FORM>
 			</td>
 		</tr>
